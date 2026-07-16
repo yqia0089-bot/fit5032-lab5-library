@@ -1,22 +1,29 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
 const formData = ref({
   username: '',
   password: '',
+  confirmPassword: '',
   isAustralian: false,
   reason: '',
-  gender: ''
+  gender: '',
+  suburb: 'Clayton'
 })
 
 const submittedCards = ref([])
 
+const hasFriendReferral = computed(() => {
+  return formData.value.reason.toLowerCase().includes('friend')
+})
+
 const submitForm = () => {
   validateName(true)
   validatePassword(true)
-  if (!errors.value.username && !errors.value.password) {
+  validateConfirmPassword(true)
+  if (!errors.value.username && !errors.value.password && !errors.value.confirmPassword) {
     submittedCards.value.push({ ...formData.value })
     clearForm()
   }
@@ -26,15 +33,18 @@ const clearForm = () => {
   formData.value = {
     username: '',
     password: '',
+    confirmPassword: '',
     isAustralian: false,
     reason: '',
-    gender: ''
+    gender: '',
+    suburb: 'Clayton'
   }
 }
 
 const errors = ref({
   username: null,
   password: null,
+  confirmPassword: null,
   resident: null,
   gender: null,
   reason: null
@@ -70,6 +80,14 @@ const validatePassword = (blur) => {
     errors.value.password = null
   }
 }
+
+const validateConfirmPassword = (blur) => {
+  if (formData.value.password !== formData.value.confirmPassword) {
+    if (blur) errors.value.confirmPassword = 'Passwords do not match.'
+  } else {
+    errors.value.confirmPassword = null
+  }
+}
 </script>
 
 <template>
@@ -84,7 +102,7 @@ const validatePassword = (blur) => {
         </p>
         <form @submit.prevent="submitForm">
           <div class="row mb-3">
-            <div class="col-md-6 col-sm-6">
+            <div class="col-12">
               <label for="username" class="form-label">Username</label>
               <input
                 type="text"
@@ -97,6 +115,8 @@ const validatePassword = (blur) => {
               <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
             </div>
 
+          </div>
+          <div class="row mb-3">
             <div class="col-md-6 col-sm-6">
               <label for="password" class="form-label">Password</label>
               <input
@@ -108,6 +128,21 @@ const validatePassword = (blur) => {
                 v-model="formData.password"
               />
               <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
+            </div>
+
+            <div class="col-md-6 col-sm-6">
+              <label for="confirm-password" class="form-label">Confirm password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="confirm-password"
+                @blur="() => validateConfirmPassword(true)"
+                @input="() => validateConfirmPassword(false)"
+                v-model="formData.confirmPassword"
+              />
+              <div v-if="errors.confirmPassword" class="text-danger">
+                {{ errors.confirmPassword }}
+              </div>
             </div>
           </div>
           <div class="row mb-3">
@@ -139,6 +174,18 @@ const validatePassword = (blur) => {
               rows="3"
               v-model="formData.reason"
             ></textarea>
+            <div v-if="hasFriendReferral" class="text-success mt-1">
+              Great to have a friend
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="suburb" class="form-label">Suburb</label>
+            <input
+              id="suburb"
+              type="text"
+              class="form-control"
+              v-bind:value="formData.suburb"
+            />
           </div>
           <div class="text-center">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
@@ -202,6 +249,7 @@ const validatePassword = (blur) => {
 /* ID selectors */
 #username:focus,
 #password:focus,
+#confirm-password:focus,
 #isAustralian:focus,
 .card {
   border: 1px solid #ccc;
