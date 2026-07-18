@@ -1,35 +1,40 @@
-# NoMash-Library
+# FIT5032 Lab Topic 5
 
-This template should help get you started developing with Vue 3 in Vite.
+Student Name: Yikai Qiao<br>
+Student ID: 36668443<br>
+School GitHub Account: yqia0089-bot<br>
+Previous Personal Commit Account: QuietYouthKept
 
-## Recommended IDE Setup
+The commits authored under `QuietYouthKept` and `yqia0089-bot` were both created by Yikai Qiao.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+`QuietYouthKept` was previously used as a personal GitHub identity. `yqia0089-bot` is the GitHub account registered using the university email account and is the repository owner used for FIT5032 submission.
 
-## Customize configuration
+## Implemented work
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- Password confirmation validation
+- Event handling with `@submit.prevent`, `@blur`, `@input` and `@click`
+- Conditional feedback for the reason field
+- One-way binding with `v-bind` and two-way binding with `v-model`
+- Home and About routes
+- Login and Access Denied views
+- Navigation guard for the protected About route
+- Logout behaviour
 
-## Project Setup
+## Final version
 
-```sh
+- Final commit: [View commit](https://github.com/yqia0089-bot/fit5032-lab5-library/commit/1f877e777fae5e8f391f95e397ff8e71b88b7c5a)
+- Version tag: `lab-topic-5`
+
+## Run locally
+
+```bash
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+Additional project commands:
 
-```sh
+```bash
 npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
 npm run lint
 ```
