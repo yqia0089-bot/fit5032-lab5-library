@@ -22,8 +22,11 @@ The commits authored under `QuietYouthKept` and `yqia0089-bot` were both created
 
 ## Final version
 
-- Final commit: [View commit](https://github.com/yqia0089-bot/fit5032-lab5-library/commit/1f877e777fae5e8f391f95e397ff8e71b88b7c5a)
-- Version tag: `lab-topic-5`
+- Final implementation commit: [View commit](https://github.com/yqia0089-bot/fit5032-lab5-library/commit/1f877e777fae5e8f391f95e397ff8e71b88b7c5a)
+- Original implementation tag: `lab-topic-5`
+- Runnable submission tag: `lab-topic-5-runnable`
+
+The runnable submission keeps the Lab Topic 5 implementation unchanged and uses Vue Router 4.4.5 for compatibility with the existing Vue 3 and Vite 5 project.
 
 ## Run locally
 
