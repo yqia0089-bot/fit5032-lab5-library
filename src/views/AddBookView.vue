@@ -62,6 +62,10 @@
         </form>
       </div>
     </div>
+
+    <BookList
+      :refresh-token="refreshToken"
+    />
   </div>
 </template>
 
@@ -73,6 +77,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore'
 import { db } from '../Firebase/init'
+import BookList from '../components/BookList.vue'
 
 defineOptions({
   name: 'AddBookView',
@@ -83,6 +88,7 @@ const name = ref('')
 const loading = ref(false)
 const message = ref('')
 const success = ref(false)
+const refreshToken = ref(0)
 
 const addBook = async () => {
   message.value = ''
@@ -124,13 +130,10 @@ const addBook = async () => {
     message.value =
       `Book added successfully. Document ID: ${documentReference.id}`
 
-    console.log(
-      'Firestore book document:',
-      documentReference.id,
-    )
-
     isbn.value = null
     name.value = ''
+
+    refreshToken.value += 1
   } catch (error) {
     success.value = false
     message.value = `${error.code}: ${error.message}`
