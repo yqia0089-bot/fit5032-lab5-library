@@ -31,6 +31,16 @@
             Firebase Register
           </router-link>
         </li>
+
+        <li class="nav-item">
+          <router-link
+            to="/firebase-signin"
+            class="nav-link"
+            active-class="active"
+          >
+            Firebase Sign In
+          </router-link>
+        </li>
       </ul>
     </header>
   </div>
