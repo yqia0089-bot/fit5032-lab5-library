@@ -7,6 +7,7 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import FirebaseRegisterView from '../views/FirebaseRegisterView.vue'
 import FirebaseSigninView from '../views/FirebaseSigninView.vue'
+import FirebaseAccountView from '../views/FirebaseAccountView.vue'
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
     path: '/firebase-signin',
     name: 'FirebaseSignin',
     component: FirebaseSigninView,
+  },
+  {
+    path: '/firebase-account',
+    name: 'FirebaseAccount',
+    component: FirebaseAccountView,
   },
 ]
 

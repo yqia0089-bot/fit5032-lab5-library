@@ -41,6 +41,16 @@
             Firebase Sign In
           </router-link>
         </li>
+
+        <li class="nav-item">
+          <router-link
+            to="/firebase-account"
+            class="nav-link"
+            active-class="active"
+          >
+            Account / Logout
+          </router-link>
+        </li>
       </ul>
     </header>
   </div>
