@@ -2,12 +2,18 @@ import {
   createRouter,
   createWebHistory,
 } from 'vue-router'
+import {
+  onAuthStateChanged,
+} from 'firebase/auth'
 
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import FirebaseRegisterView from '../views/FirebaseRegisterView.vue'
 import FirebaseSigninView from '../views/FirebaseSigninView.vue'
 import FirebaseAccountView from '../views/FirebaseAccountView.vue'
+import AddBookView from '../views/AddBookView.vue'
+
+import { auth } from '../Firebase/init'
 
 const routes = [
   {
@@ -35,11 +41,51 @@ const routes = [
     name: 'FirebaseAccount',
     component: FirebaseAccountView,
   },
+  {
+    path: '/add-book',
+    name: 'AddBook',
+    component: AddBookView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+const getCurrentFirebaseUser = () => {
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        unsubscribe()
+        resolve(user)
+      },
+    )
+  })
+}
+
+router.beforeEach(async (to) => {
+  if (!to.meta.requiresAuth) {
+    return true
+  }
+
+  const currentUser =
+    await getCurrentFirebaseUser()
+
+  if (currentUser) {
+    return true
+  }
+
+  return {
+    name: 'FirebaseSignin',
+    query: {
+      redirect: to.fullPath,
+    },
+  }
 })
 
 export default router
