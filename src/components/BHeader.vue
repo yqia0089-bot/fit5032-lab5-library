@@ -78,6 +78,16 @@
             Get Weather
           </router-link>
         </li>
+
+        <li class="nav-item">
+          <router-link
+            to="/CountBookAPI"
+            class="nav-link"
+            active-class="active"
+          >
+            Count Books API
+          </router-link>
+        </li>
       </ul>
     </header>
   </div>
