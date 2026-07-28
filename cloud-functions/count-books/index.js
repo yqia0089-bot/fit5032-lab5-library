@@ -20,36 +20,52 @@ const createResponse = (
 }
 
 const parseRequest = (event) => {
-  const request =
-    typeof event === 'string'
-      ? JSON.parse(event)
-      : event ?? {}
+  // 阿里云 FC 会把 event 作为 Buffer 传入
+  const rawEvent = Buffer.isBuffer(event)
+    ? event.toString('utf8')
+    : event
 
-  if (!request.body) {
+  // 将整个 HTTP 请求转换为对象
+  const request =
+    typeof rawEvent === 'string'
+      ? JSON.parse(rawEvent)
+      : rawEvent ?? {}
+
+  // HTTP Trigger 请求的数据通常位于 body 中
+  if (
+    request.body !== undefined &&
+    request.body !== null
+  ) {
+    const rawBody =
+      request.isBase64Encoded
+        ? Buffer.from(
+            request.body,
+            'base64',
+          ).toString('utf8')
+        : request.body
+
+    const payload =
+      typeof rawBody === 'string'
+        ? rawBody.trim()
+          ? JSON.parse(rawBody)
+          : {}
+        : rawBody ?? {}
+
     return {
       request,
-      payload: {},
+      payload,
     }
   }
 
-  const rawBody =
-    request.isBase64Encoded
-      ? Buffer.from(
-          request.body,
-          'base64',
-        ).toString('utf8')
-      : request.body
-
+  // 在线测试可能直接传入：
+  // { "books": [...] }
   return {
     request,
-    payload:
-      typeof rawBody === 'string'
-        ? JSON.parse(rawBody)
-        : rawBody,
+    payload: request,
   }
 }
 
-exports.handler = async (
+export const handler = async (
   event,
   context,
 ) => {
@@ -69,14 +85,6 @@ exports.handler = async (
         function: 'countBooks',
         instructions:
           'Send a POST request with a books array.',
-        example: {
-          books: [
-            {
-              title: '1984',
-              author: 'George Orwell',
-            },
-          ],
-        },
       })
     }
 
