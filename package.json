@@ -8,12 +8,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "start": "node server.js"
   },
   "dependencies": {
     "@primevue/themes": "^4.5.4",
     "axios": "^1.18.1",
     "bootstrap": "^5.3.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "firebase": "^12.16.0",
     "primevue": "^4.5.5",
     "vue": "^3.4.29",
