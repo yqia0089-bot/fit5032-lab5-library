@@ -12,6 +12,7 @@ import FirebaseRegisterView from '../views/FirebaseRegisterView.vue'
 import FirebaseSigninView from '../views/FirebaseSigninView.vue'
 import FirebaseAccountView from '../views/FirebaseAccountView.vue'
 import AddBookView from '../views/AddBookView.vue'
+import WeatherView from '../views/WeatherView.vue'
 
 import { auth } from '../Firebase/init'
 
@@ -48,6 +49,11 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: '/WeatherCheck',
+    name: 'GetWeather',
+    component: WeatherView,
   },
 ]
 

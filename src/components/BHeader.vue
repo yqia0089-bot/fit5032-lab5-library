@@ -1,7 +1,14 @@
 <template>
   <div class="container">
     <header class="py-3 border-bottom">
-      <ul class="nav nav-pills justify-content-center">
+      <ul
+        class="
+          nav
+          nav-pills
+          justify-content-center
+          gap-1
+        "
+      >
         <li class="nav-item">
           <router-link
             to="/"
@@ -59,6 +66,16 @@
             active-class="active"
           >
             Add Book
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link
+            to="/WeatherCheck"
+            class="nav-link"
+            active-class="active"
+          >
+            Get Weather
           </router-link>
         </li>
       </ul>
