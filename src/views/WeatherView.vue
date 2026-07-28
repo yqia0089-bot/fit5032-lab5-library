@@ -1,16 +1,46 @@
 <template>
   <div class="container py-5">
     <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
+      <div class="col-12 col-md-8 col-lg-7">
         <h1 class="text-center mb-4">
           Weather App
         </h1>
+
+        <form
+          class="input-group mb-3"
+          @submit.prevent="searchByCity"
+        >
+          <input
+            v-model.trim="city"
+            type="text"
+            class="form-control"
+            placeholder="Enter city, for example Clayton, AU"
+            aria-label="City"
+          />
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            :disabled="loading"
+          >
+            Search
+          </button>
+        </form>
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100 mb-4"
+          :disabled="loading"
+          @click="fetchCurrentLocationWeather"
+        >
+          Use Current Location
+        </button>
 
         <div
           v-if="loading"
           class="alert alert-info"
         >
-          Loading current location weather...
+          Loading weather...
         </div>
 
         <div
@@ -29,6 +59,14 @@
               {{ weatherData.name }},
               {{ weatherData.sys.country }}
             </h2>
+
+            <p
+              v-if="searchedLocation"
+              class="text-muted"
+            >
+              Search result:
+              {{ searchedLocation }}
+            </p>
 
             <img
               v-if="iconUrl"
@@ -57,20 +95,12 @@
             </p>
 
             <p class="mb-0">
-              <strong>Source:</strong>
-              Browser current location
+              <strong>Coordinates:</strong>
+              {{ weatherData.coord.lat }},
+              {{ weatherData.coord.lon }}
             </p>
           </div>
         </div>
-
-        <button
-          type="button"
-          class="btn btn-outline-primary mt-3 w-100"
-          :disabled="loading"
-          @click="fetchCurrentLocationWeather"
-        >
-          Refresh Current Location Weather
-        </button>
       </div>
     </div>
   </div>
@@ -91,7 +121,9 @@ defineOptions({
 const apiKey =
   import.meta.env.VITE_OPENWEATHER_API_KEY
 
+const city = ref('')
 const weatherData = ref(null)
+const searchedLocation = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
 
@@ -133,34 +165,112 @@ const iconUrl = computed(() => {
   return `https://openweathermap.org/img/wn/${icon}@2x.png`;
 })
 
+const checkApiKey = () => {
+  if (apiKey) {
+    return true
+  }
+
+  errorMessage.value =
+    'OpenWeather API key is missing from .env.local.'
+
+  return false
+}
+
 const fetchWeatherByCoordinates = async (
   latitude,
   longitude,
 ) => {
-  const url =
-    'https://api.openweathermap.org/data/2.5/weather'
-
-  const response = await axios.get(url, {
-    params: {
-      lat: latitude,
-      lon: longitude,
-      appid: apiKey,
-      units: 'metric',
+  const response = await axios.get(
+    'https://api.openweathermap.org/data/2.5/weather',
+    {
+      params: {
+        lat: latitude,
+        lon: longitude,
+        appid: apiKey,
+        units: 'metric',
+      },
     },
-  })
+  )
 
   weatherData.value = response.data
 }
 
-const fetchCurrentLocationWeather = async () => {
-  loading.value = true
+const searchByCity = async () => {
   errorMessage.value = ''
+  searchedLocation.value = ''
 
-  if (!apiKey) {
+  if (!checkApiKey()) {
+    return
+  }
+
+  if (!city.value) {
     errorMessage.value =
-      'OpenWeather API key is missing from .env.local.'
+      'Please enter a city name.'
 
+    return
+  }
+
+  loading.value = true
+
+  try {
+    const geocodingResponse =
+      await axios.get(
+        'https://api.openweathermap.org/geo/1.0/direct',
+        {
+          params: {
+            q: city.value,
+            limit: 1,
+            appid: apiKey,
+          },
+        },
+      )
+
+    if (
+      !Array.isArray(geocodingResponse.data) ||
+      geocodingResponse.data.length === 0
+    ) {
+      throw new Error(
+        'No matching city was found.',
+      )
+    }
+
+    const location =
+      geocodingResponse.data[0]
+
+    searchedLocation.value = [
+      location.name,
+      location.state,
+      location.country,
+    ]
+      .filter(Boolean)
+      .join(', ')
+
+    await fetchWeatherByCoordinates(
+      location.lat,
+      location.lon,
+    )
+  } catch (error) {
+    weatherData.value = null
+
+    errorMessage.value =
+      error.response?.data?.message ??
+      error.message ??
+      'Unable to search for the city.'
+
+    console.error(
+      'City weather search error:',
+      error,
+    )
+  } finally {
     loading.value = false
+  }
+}
+
+const fetchCurrentLocationWeather = () => {
+  errorMessage.value = ''
+  searchedLocation.value = ''
+
+  if (!checkApiKey()) {
     return
   }
 
@@ -168,9 +278,10 @@ const fetchCurrentLocationWeather = async () => {
     errorMessage.value =
       'Geolocation is not supported by this browser.'
 
-    loading.value = false
     return
   }
+
+  loading.value = true
 
   navigator.geolocation.getCurrentPosition(
     async (position) => {
@@ -179,14 +290,19 @@ const fetchCurrentLocationWeather = async () => {
           position.coords.latitude,
           position.coords.longitude,
         )
+
+        searchedLocation.value =
+          'Current browser location'
       } catch (error) {
+        weatherData.value = null
+
         errorMessage.value =
           error.response?.data?.message ??
           error.message ??
-          'Unable to retrieve weather data.'
+          'Unable to retrieve current weather.'
 
         console.error(
-          'Current weather API error:',
+          'Current weather error:',
           error,
         )
       } finally {
@@ -195,7 +311,7 @@ const fetchCurrentLocationWeather = async () => {
     },
     (error) => {
       errorMessage.value =
-        `Unable to access the current location: ${error.message}`
+        `Unable to access current location: ${error.message}`
 
       loading.value = false
     },
