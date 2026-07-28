@@ -98,6 +98,26 @@
             Get All Books API
           </router-link>
         </li>
+
+        <li class="nav-item">
+          <router-link
+            to="/cloud-book-count"
+            class="nav-link"
+            active-class="active"
+          >
+            Cloud Book Count
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link
+            to="/firestore-data-market"
+            class="nav-link"
+            active-class="active"
+          >
+            Data Marketplace
+          </router-link>
+        </li>
       </ul>
     </header>
   </div>
