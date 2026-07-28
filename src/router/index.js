@@ -15,6 +15,7 @@ import AddBookView from '../views/AddBookView.vue'
 import WeatherView from '../views/WeatherView.vue'
 import CountBookAPIView from '../views/CountBookAPIView.vue'
 import GetAllBookAPIView from '../views/GetAllBookAPIView.vue'
+import GetBookCountView from '../views/GetBookCountView.vue'
 
 import { auth } from '../Firebase/init'
 
@@ -66,6 +67,11 @@ const routes = [
     path: '/GetAllBookAPI',
     name: 'GetAllBookAPI',
     component: GetAllBookAPIView,
+  },
+  {
+    path: '/cloud-book-count',
+    name: 'CloudBookCount',
+    component: GetBookCountView,
   },
 ]
 
