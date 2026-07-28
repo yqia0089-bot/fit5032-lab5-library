@@ -16,6 +16,7 @@ import WeatherView from '../views/WeatherView.vue'
 import CountBookAPIView from '../views/CountBookAPIView.vue'
 import GetAllBookAPIView from '../views/GetAllBookAPIView.vue'
 import GetBookCountView from '../views/GetBookCountView.vue'
+import FirestoreDataMarketView from '../views/FirestoreDataMarketView.vue'
 
 import { auth } from '../Firebase/init'
 
@@ -72,6 +73,14 @@ const routes = [
     path: '/cloud-book-count',
     name: 'CloudBookCount',
     component: GetBookCountView,
+  },
+  {
+    path: '/firestore-data-market',
+    name: 'FirestoreDataMarket',
+    component: FirestoreDataMarketView,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ]
 
