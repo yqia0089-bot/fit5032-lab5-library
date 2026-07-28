@@ -162,7 +162,10 @@ const iconUrl = computed(() => {
     return ''
   }
 
-  return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+  return (
+    `https://openweathermap.org/img/wn/` +
+    `${icon}@2x.png`
+  )
 })
 
 const checkApiKey = () => {
@@ -171,7 +174,7 @@ const checkApiKey = () => {
   }
 
   errorMessage.value =
-    'OpenWeather API key is missing from .env.local.'
+    'OpenWeather API key is missing.'
 
   return false
 }
@@ -226,7 +229,9 @@ const searchByCity = async () => {
       )
 
     if (
-      !Array.isArray(geocodingResponse.data) ||
+      !Array.isArray(
+        geocodingResponse.data,
+      ) ||
       geocodingResponse.data.length === 0
     ) {
       throw new Error(
@@ -311,7 +316,8 @@ const fetchCurrentLocationWeather = () => {
     },
     (error) => {
       errorMessage.value =
-        `Unable to access current location: ${error.message}`
+        `Unable to access current location: ` +
+        error.message
 
       loading.value = false
     },
